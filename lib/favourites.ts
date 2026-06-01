@@ -6,6 +6,7 @@ const STORAGE_KEY = "pokedex_favourites";
 
 export function useFavourites() {
   const [favourites, setFavourites] = useState<string[]>([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     try {
@@ -14,6 +15,7 @@ export function useFavourites() {
     } catch {
       // ignore parse/storage errors
     }
+    setIsHydrated(true);
   }, []);
 
   function toggle(name: string) {
@@ -34,5 +36,5 @@ export function useFavourites() {
     return favourites.includes(name);
   }
 
-  return { favourites, toggle, isFavourite };
+  return { favourites, toggle, isFavourite, isHydrated };
 }

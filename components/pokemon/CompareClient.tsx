@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ComparePanel from "./ComparePanel";
 import { Input } from "@/components/ui/input";
 
@@ -25,7 +25,9 @@ export default function CompareClient() {
   const a = useDebounce(inputA.trim().toLowerCase(), 400);
   const b = useDebounce(inputB.trim().toLowerCase(), 400);
 
+  const isMounted = useRef(false);
   useEffect(() => {
+    if (!isMounted.current) { isMounted.current = true; return; }
     const params = new URLSearchParams();
     if (a) params.set("a", a);
     if (b) params.set("b", b);
@@ -37,16 +39,18 @@ export default function CompareClient() {
     <div className="space-y-6">
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Pokémon A</label>
+          <label htmlFor="pokemon-a" className="text-sm font-medium">Pokémon A</label>
           <Input
+            id="pokemon-a"
             placeholder="e.g. pikachu"
             value={inputA}
             onChange={(e) => setInputA(e.target.value.toLowerCase())}
           />
         </div>
         <div className="space-y-1.5">
-          <label className="text-sm font-medium">Pokémon B</label>
+          <label htmlFor="pokemon-b" className="text-sm font-medium">Pokémon B</label>
           <Input
+            id="pokemon-b"
             placeholder="e.g. charizard"
             value={inputB}
             onChange={(e) => setInputB(e.target.value.toLowerCase())}

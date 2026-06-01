@@ -24,7 +24,22 @@ function FavouriteCard({ name }: { name: string }) {
 }
 
 export default function FavouritesGrid() {
-  const { favourites } = useFavourites();
+  const { favourites, isHydrated } = useFavourites();
+
+  if (!isHydrated) {
+    return (
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="flex flex-col items-center gap-2 rounded-xl border p-4">
+            <Skeleton className="h-3 w-10 self-start" />
+            <Skeleton className="h-24 w-24 rounded-full" />
+            <Skeleton className="h-3 w-20" />
+            <Skeleton className="h-5 w-14 rounded-full" />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   if (favourites.length === 0) {
     return (

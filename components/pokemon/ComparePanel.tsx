@@ -170,7 +170,7 @@ export default function ComparePanel({ pokemonA, pokemonB }: ComparePanelProps) 
       {/* Hint when only one Pokémon is provided */}
       {pokemonA && !pokemonB && !left.isLoading && !left.isError && (
         <p className="text-center text-sm text-muted-foreground">
-          Add <code className="font-mono">&amp;right=pokemonname</code> to the URL to compare.
+          Add <code className="font-mono">&amp;b=pokemonname</code> to the URL to compare.
         </p>
       )}
     </div>

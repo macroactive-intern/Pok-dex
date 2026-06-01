@@ -19,7 +19,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props) {
   const { name } = await params;
-  return { title: `${name.charAt(0).toUpperCase() + name.slice(1)} — Pokédex` };
+  const formatted = name.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+  return { title: formatted };
 }
 
 export default async function PokemonPage({ params }: Props) {
@@ -28,15 +29,10 @@ export default async function PokemonPage({ params }: Props) {
   const pokemon = await getPokemonByName(name).catch(() => null);
   if (!pokemon) notFound();
 
-  const [species, evolutionChain] = await Promise.allSettled([
-    getPokemonSpecies(pokemon.species.name),
-    getPokemonSpecies(pokemon.species.name).then((s) =>
-      getEvolutionChainByUrl(s.evolution_chain.url)
-    ),
-  ]);
-
-  const speciesData = species.status === "fulfilled" ? species.value : null;
-  const evoChain = evolutionChain.status === "fulfilled" ? evolutionChain.value : null;
+  const speciesData = await getPokemonSpecies(pokemon.species.name).catch(() => null);
+  const evoChain = speciesData
+    ? await getEvolutionChainByUrl(speciesData.evolution_chain.url).catch(() => null)
+    : null;
 
   const types = pokemon.types.map((t) => t.type.name as TypeName);
   const matchups = getDefensiveMatchups(types);
@@ -130,7 +126,7 @@ export default async function PokemonPage({ params }: Props) {
           <ul className="space-y-2">
             {pokemon.abilities.map(({ ability, is_hidden }) => (
               <li key={ability.name} className="flex items-center gap-2">
-                <span className="capitalize font-medium">{ability.name.replace("-", " ")}</span>
+                <span className="capitalize font-medium">{ability.name.replace(/-/g, " ")}</span>
                 {is_hidden && <Badge variant="outline">Hidden</Badge>}
               </li>
             ))}
