@@ -1,7 +1,10 @@
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import TypeBadge from "./TypeBadge";
+import FavouriteButton from "./FavouriteButton";
 import type { Pokemon, TypeName } from "@/lib/pokemon/types";
 
 interface PokemonCardProps {
@@ -21,10 +24,16 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
     <Link href={`/pokemon/${pokemon.name}`} className="block">
       <Card className="group h-full cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:translate-y-0">
         <CardContent className="flex flex-col items-center gap-2 p-4">
-          {/* Pokédex number */}
-          <span className="self-start text-xs text-muted-foreground font-mono tabular-nums">
-            #{String(pokemon.id).padStart(4, "0")}
-          </span>
+          {/* Number row + favourite button */}
+          <div className="flex w-full items-center justify-between">
+            <span className="text-xs text-muted-foreground font-mono tabular-nums">
+              #{String(pokemon.id).padStart(4, "0")}
+            </span>
+            <FavouriteButton
+              name={pokemon.name}
+              className="opacity-0 group-hover:opacity-100 focus:opacity-100"
+            />
+          </div>
 
           {/* Sprite */}
           <div className="relative h-24 w-24 shrink-0">

@@ -1,6 +1,7 @@
 import { getPokemonList, getPokemonByName } from "@/lib/pokemon/api";
 import HomeClient from "@/components/pokemon/HomeClient";
 import TypeCalculator from "@/components/pokemon/TypeCalculator";
+import PokemonOfTheDay from "@/components/pokemon/PokemonOfTheDay";
 
 export default async function HomePage() {
   const list = await getPokemonList(20, 0);
@@ -14,6 +15,8 @@ export default async function HomePage() {
         <h1 className="text-4xl font-bold tracking-tight">Pokédex</h1>
         <p className="text-muted-foreground">Browse all Pokémon from every generation</p>
       </div>
+
+      <PokemonOfTheDay />
 
       <HomeClient initialPokemon={initialPokemon} />
 

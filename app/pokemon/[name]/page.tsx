@@ -11,6 +11,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
 import { ChevronLeft, GitCompareArrows } from "lucide-react";
+import FavouriteButton from "@/components/pokemon/FavouriteButton";
 
 interface Props {
   params: Promise<{ name: string }>;
@@ -80,6 +81,7 @@ export default async function PokemonPage({ params }: Props) {
             <h1 className="text-4xl font-bold capitalize">{pokemon.name}</h1>
             {speciesData?.is_legendary && <Badge variant="secondary">Legendary</Badge>}
             {speciesData?.is_mythical && <Badge variant="secondary">Mythical</Badge>}
+            <FavouriteButton name={pokemon.name} size="md" />
           </div>
           {genus && <p className="text-muted-foreground italic">{genus}</p>}
           <div className="flex gap-2">
