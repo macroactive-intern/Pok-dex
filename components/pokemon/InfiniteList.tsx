@@ -1,38 +1,35 @@
 "use client";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
-import { getPokemonByName, getPokemonList } from "@/lib/pokemon/api";
+import { useEffect, useRef, useMemo } from "react";
+import { useInfinitePokemonList } from "@/lib/pokemon/client";
 import type { Pokemon } from "@/lib/pokemon/types";
 import PokemonGrid from "./PokemonGrid";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PAGE_SIZE = 20;
 
-async function fetchPage({ pageParam }: { pageParam: number }) {
-  const list = await getPokemonList(PAGE_SIZE, pageParam);
-  const pokemon = await Promise.all(
-    list.results.map((r) => getPokemonByName(r.name))
-  );
-  return { pokemon, next: list.next, offset: pageParam + PAGE_SIZE };
-}
-
 interface InfiniteListProps {
   initialPokemon: Pokemon[];
 }
 
 export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
+  const initialData = useMemo(
+    () => ({
+      pages: [
+        {
+          pokemon: initialPokemon,
+          next: "has-more" as string | null,
+          offset: PAGE_SIZE,
+        },
+      ],
+      pageParams: [0] as number[],
+    }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    []
+  );
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
-    useInfiniteQuery({
-      queryKey: ["pokemon-infinite"],
-      queryFn: fetchPage,
-      initialPageParam: PAGE_SIZE,
-      getNextPageParam: (last) => (last.next ? last.offset : undefined),
-      initialData: {
-        pages: [{ pokemon: initialPokemon, next: "yes", offset: PAGE_SIZE }],
-        pageParams: [0],
-      },
-    });
+    useInfinitePokemonList(initialData);
 
   const sentinelRef = useRef<HTMLDivElement>(null);
 
