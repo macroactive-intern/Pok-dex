@@ -10,7 +10,7 @@ import EvolutionChain from "@/components/pokemon/EvolutionChain";
 import Image from "next/image";
 import Link from "next/link";
 import { buttonVariants } from "@/components/ui/button";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, GitCompareArrows } from "lucide-react";
 
 interface Props {
   params: Promise<{ name: string }>;
@@ -40,9 +40,12 @@ export default async function PokemonPage({ params }: Props) {
   const types = pokemon.types.map((t) => t.type.name as TypeName);
   const matchups = getDefensiveMatchups(types);
 
-  const flavorText = speciesData?.flavor_text_entries
-    .find((e) => e.language.name === "en")
-    ?.flavor_text.replace(/\f/g, " ");
+  const rawFlavor =
+    speciesData?.flavor_text_entries.find((e) => e.language.name === "en")
+      ?.flavor_text ?? null;
+  const flavorText = rawFlavor
+    ? rawFlavor.replace(/[\f\n\r­]/g, " ").replace(/\s+/g, " ").trim()
+    : "No flavour text available.";
 
   const genus = speciesData?.genera.find((g) => g.language.name === "en")?.genus;
 
@@ -52,9 +55,15 @@ export default async function PokemonPage({ params }: Props) {
 
   return (
     <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between">
         <Link href="/" className={buttonVariants({ variant: "ghost", size: "sm" })}>
           <ChevronLeft className="h-4 w-4" />Back
+        </Link>
+        <Link
+          href={`/compare?left=${pokemon.name}`}
+          className={buttonVariants({ variant: "outline", size: "sm" })}
+        >
+          <GitCompareArrows className="h-4 w-4" />Compare
         </Link>
       </div>
 
@@ -78,7 +87,7 @@ export default async function PokemonPage({ params }: Props) {
               <TypeBadge key={type.name} type={type.name as TypeName} size="lg" />
             ))}
           </div>
-          {flavorText && <p className="text-sm leading-relaxed max-w-prose">{flavorText}</p>}
+          <p className="text-sm leading-relaxed max-w-prose">{flavorText}</p>
           <div className="flex gap-6 text-sm">
             <div><span className="text-muted-foreground">Height</span><br /><strong>{(pokemon.height / 10).toFixed(1)} m</strong></div>
             <div><span className="text-muted-foreground">Weight</span><br /><strong>{(pokemon.weight / 10).toFixed(1)} kg</strong></div>

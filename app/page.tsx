@@ -1,6 +1,6 @@
 import { getPokemonList, getPokemonByName } from "@/lib/pokemon/api";
-import PokemonSearch from "@/components/pokemon/PokemonSearch";
-import InfiniteList from "@/components/pokemon/InfiniteList";
+import HomeClient from "@/components/pokemon/HomeClient";
+import TypeCalculator from "@/components/pokemon/TypeCalculator";
 
 export default async function HomePage() {
   const list = await getPokemonList(20, 0);
@@ -14,9 +14,13 @@ export default async function HomePage() {
         <h1 className="text-4xl font-bold tracking-tight">Pokédex</h1>
         <p className="text-muted-foreground">Browse all Pokémon from every generation</p>
       </div>
-      <PokemonSearch>
-        <InfiniteList initialPokemon={initialPokemon} />
-      </PokemonSearch>
+
+      <HomeClient initialPokemon={initialPokemon} />
+
+      <section className="space-y-4 border-t pt-8">
+        <h2 className="text-2xl font-bold">Type Calculator</h2>
+        <TypeCalculator />
+      </section>
     </main>
   );
 }

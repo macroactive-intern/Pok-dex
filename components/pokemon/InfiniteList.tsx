@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useMemo } from "react";
 import { useInfinitePokemonList } from "@/lib/pokemon/client";
-import type { Pokemon } from "@/lib/pokemon/types";
+import type { Pokemon, TypeName } from "@/lib/pokemon/types";
 import PokemonGrid from "./PokemonGrid";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -10,9 +10,10 @@ const PAGE_SIZE = 20;
 
 interface InfiniteListProps {
   initialPokemon: Pokemon[];
+  typeFilter?: TypeName | null;
 }
 
-export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
+export default function InfiniteList({ initialPokemon, typeFilter }: InfiniteListProps) {
   // Seed React Query's cache with the server-rendered first page so it never
   // re-fetches page 0; infinite scroll starts from offset PAGE_SIZE.
   const initialData = useMemo(
@@ -64,10 +65,13 @@ export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
   }
 
   const allPokemon: Pokemon[] = data.pages.flatMap((p) => p.pokemon);
+  const displayed = typeFilter
+    ? allPokemon.filter((p) => p.types.some((t) => t.type.name === typeFilter))
+    : allPokemon;
 
   return (
     <div className="space-y-6">
-      <PokemonGrid pokemon={allPokemon} />
+      <PokemonGrid pokemon={displayed} />
 
       {/* Skeleton cards shown while the next page loads */}
       {isFetchingNextPage && <CardSkeleton count={PAGE_SIZE} />}
