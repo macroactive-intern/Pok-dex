@@ -13,6 +13,8 @@ interface InfiniteListProps {
 }
 
 export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
+  // Seed React Query's cache with the server-rendered first page so it never
+  // re-fetches page 0; infinite scroll starts from offset PAGE_SIZE.
   const initialData = useMemo(
     () => ({
       pages: [
@@ -31,11 +33,15 @@ export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useInfinitePokemonList(initialData);
 
+  // Sentinel: a zero-height element at the list bottom.
+  // IntersectionObserver fires when it enters the viewport (+ 200px rootMargin).
+  // useEffect is only used to attach / detach the observer — no polling.
   const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const el = sentinelRef.current;
     if (!el) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
@@ -44,12 +50,17 @@ export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
       },
       { rootMargin: "200px" }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
   if (status === "error") {
-    return <p className="text-destructive">Failed to load Pokémon.</p>;
+    return (
+      <p className="py-16 text-center text-destructive">
+        Failed to load Pokémon. Please refresh.
+      </p>
+    );
   }
 
   const allPokemon: Pokemon[] = data.pages.flatMap((p) => p.pokemon);
@@ -57,21 +68,34 @@ export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
   return (
     <div className="space-y-6">
       <PokemonGrid pokemon={allPokemon} />
-      <div ref={sentinelRef} className="flex justify-center py-4">
-        {isFetchingNextPage && <GridSkeleton count={6} />}
-        {!hasNextPage && !isFetchingNextPage && (
-          <p className="text-muted-foreground text-sm">All Pokémon loaded.</p>
-        )}
-      </div>
+
+      {/* Skeleton cards shown while the next page loads */}
+      {isFetchingNextPage && <CardSkeleton count={PAGE_SIZE} />}
+
+      {/* Zero-height sentinel — intersection triggers fetchNextPage */}
+      <div ref={sentinelRef} aria-hidden="true" />
+
+      {/* End-of-list message, shown only after all pages are loaded */}
+      {!hasNextPage && !isFetchingNextPage && (
+        <p className="pb-8 text-center text-sm text-muted-foreground">
+          All Pokémon loaded.
+        </p>
+      )}
     </div>
   );
 }
 
-function GridSkeleton({ count = 20 }: { count?: number }) {
+function CardSkeleton({ count }: { count: number }) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
       {Array.from({ length: count }).map((_, i) => (
-        <Skeleton key={i} className="h-40 rounded-xl" />
+        // Mimics PokemonCard inner layout: number + sprite + name + badge
+        <div key={i} className="flex flex-col items-center gap-2 rounded-xl border p-4">
+          <Skeleton className="h-3 w-10 self-start" />
+          <Skeleton className="h-24 w-24 rounded-full" />
+          <Skeleton className="h-3 w-20" />
+          <Skeleton className="h-5 w-14 rounded-full" />
+        </div>
       ))}
     </div>
   );
