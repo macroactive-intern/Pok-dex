@@ -99,11 +99,11 @@ export default async function PokemonPage({ params }: Props) {
       </div>
 
       <Tabs defaultValue="stats">
-        <TabsList>
-          <TabsTrigger value="stats">Stats</TabsTrigger>
-          <TabsTrigger value="matchups">Type Matchups</TabsTrigger>
-          <TabsTrigger value="evolution">Evolution</TabsTrigger>
-          <TabsTrigger value="abilities">Abilities</TabsTrigger>
+        <TabsList className="w-full">
+          <TabsTrigger value="stats"     className="flex-1">Stats</TabsTrigger>
+          <TabsTrigger value="matchups"  className="flex-1">Type Matchups</TabsTrigger>
+          <TabsTrigger value="evolution" className="flex-1">Evolution</TabsTrigger>
+          <TabsTrigger value="abilities" className="flex-1">Abilities</TabsTrigger>
         </TabsList>
 
         <TabsContent value="stats" className="pt-4">

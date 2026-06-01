@@ -107,8 +107,8 @@ export default function ComparePanel({ pokemonA, pokemonB }: ComparePanelProps) 
 
   return (
     <div className="space-y-6">
-      {/* Side-by-side cards */}
-      <div className="grid grid-cols-3 items-center text-center gap-4">
+      {/* Side-by-side cards — stacks vertically on mobile */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 items-center text-center gap-4">
         <PokemonCard
           name={pokemonA}
           pokemon={a}
@@ -131,7 +131,7 @@ export default function ComparePanel({ pokemonA, pokemonB }: ComparePanelProps) 
         const aWins = av > bv;
         const bWins = bv > av;
         return (
-          <div key={name} className="grid grid-cols-3 items-center gap-3">
+          <div key={name} className="grid grid-cols-3 items-center gap-1.5 sm:gap-3">
             <div className="flex items-center gap-2">
               <span
                 className={`text-sm font-semibold tabular-nums w-8 text-right ${

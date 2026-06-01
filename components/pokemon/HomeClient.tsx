@@ -22,24 +22,31 @@ export default function HomeClient({ initialPokemon }: { initialPokemon: Pokemon
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-wrap gap-1.5">
-        {ALL_TYPES.map((type) => {
-          const active = activeType === type;
-          return (
-            <button
-              key={type}
-              type="button"
-              onClick={() => toggleType(type)}
-              className={cn(
-                "rounded-full transition-all",
-                active ? "ring-2 ring-offset-1 ring-foreground scale-110" : "hover:opacity-80"
-              )}
-            >
-              <TypeBadge type={type} size="sm" />
-            </button>
-          );
-        })}
+      {/* Sticky type filter — single scrollable row on mobile, wraps on sm+ */}
+      <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b -mx-4 px-4 py-2">
+        <div className="overflow-x-auto">
+          <div className="flex gap-1.5 sm:flex-wrap min-w-max sm:min-w-0 py-1">
+            {ALL_TYPES.map((type) => {
+              const active = activeType === type;
+              return (
+                <button
+                  key={type}
+                  type="button"
+                  onClick={() => toggleType(type)}
+                  className={cn(
+                    "shrink-0 rounded-full transition-all",
+                    active ? "ring-2 ring-offset-1 ring-foreground scale-110" : "hover:opacity-80"
+                  )}
+                >
+                  <TypeBadge type={type} size="sm" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
+
+      {/* Search input + grid / search results */}
       <PokemonSearch>
         <InfiniteList initialPokemon={initialPokemon} typeFilter={activeType} />
       </PokemonSearch>
