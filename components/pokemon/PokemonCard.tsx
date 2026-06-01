@@ -8,33 +8,48 @@ interface PokemonCardProps {
   pokemon: Pokemon;
 }
 
+function formatName(name: string): string {
+  return name.replace(/-/g, " ");
+}
+
 export default function PokemonCard({ pokemon }: PokemonCardProps) {
   const sprite =
     pokemon.sprites.other["official-artwork"].front_default ??
     pokemon.sprites.front_default;
 
   return (
-    <Link href={`/pokemon/${pokemon.name}`}>
-      <Card className="group cursor-pointer overflow-hidden transition-all hover:shadow-lg hover:-translate-y-1">
+    <Link href={`/pokemon/${pokemon.name}`} className="block">
+      <Card className="group h-full cursor-pointer overflow-hidden transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:translate-y-0">
         <CardContent className="flex flex-col items-center gap-2 p-4">
-          <span className="self-start text-xs text-muted-foreground font-mono">
+          {/* Pokédex number */}
+          <span className="self-start text-xs text-muted-foreground font-mono tabular-nums">
             #{String(pokemon.id).padStart(4, "0")}
           </span>
-          <div className="relative h-24 w-24">
+
+          {/* Sprite */}
+          <div className="relative h-24 w-24 shrink-0">
             {sprite ? (
               <Image
                 src={sprite}
-                alt={pokemon.name}
+                alt={formatName(pokemon.name)}
                 fill
-                className="object-contain drop-shadow-md group-hover:scale-110 transition-transform"
                 sizes="96px"
+                className="object-contain drop-shadow-md transition-transform duration-200 group-hover:scale-110"
               />
             ) : (
-              <div className="h-24 w-24 rounded-full bg-muted" />
+              <div className="flex h-24 w-24 items-center justify-center rounded-full bg-muted text-3xl text-muted-foreground select-none">
+                ?
+              </div>
             )}
           </div>
-          <p className="capitalize font-semibold text-sm">{pokemon.name}</p>
-          <div className="flex gap-1 flex-wrap justify-center">
+
+          {/* Name */}
+          <p className="text-center text-sm font-semibold capitalize leading-tight">
+            {formatName(pokemon.name)}
+          </p>
+
+          {/* Type badges */}
+          <div className="flex flex-wrap justify-center gap-1">
             {pokemon.types.map(({ type }) => (
               <TypeBadge key={type.name} type={type.name as TypeName} size="sm" />
             ))}
