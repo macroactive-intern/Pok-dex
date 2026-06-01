@@ -60,7 +60,7 @@ export default async function PokemonPage({ params }: Props) {
           <ChevronLeft className="h-4 w-4" />Back
         </Link>
         <Link
-          href={`/compare?left=${pokemon.name}`}
+          href={`/compare?a=${pokemon.name}`}
           className={buttonVariants({ variant: "outline", size: "sm" })}
         >
           <GitCompareArrows className="h-4 w-4" />Compare
