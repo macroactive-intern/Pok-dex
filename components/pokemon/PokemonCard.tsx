@@ -2,7 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import TypeBadge from "./TypeBadge";
-import type { Pokemon } from "@/lib/pokemon/types";
+import type { Pokemon, TypeName } from "@/lib/pokemon/types";
 
 interface PokemonCardProps {
   pokemon: Pokemon;
@@ -36,7 +36,7 @@ export default function PokemonCard({ pokemon }: PokemonCardProps) {
           <p className="capitalize font-semibold text-sm">{pokemon.name}</p>
           <div className="flex gap-1 flex-wrap justify-center">
             {pokemon.types.map(({ type }) => (
-              <TypeBadge key={type.name} type={type.name} size="sm" />
+              <TypeBadge key={type.name} type={type.name as TypeName} size="sm" />
             ))}
           </div>
         </CardContent>

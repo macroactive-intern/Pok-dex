@@ -2,11 +2,14 @@ import { TYPE_COLORS } from "@/lib/pokemon/typeChart";
 import type { TypeName } from "@/lib/pokemon/types";
 import { cn } from "@/lib/utils";
 
-interface TypeBadgeProps {
-  type: string;
+export type { TypeName as PokemonType };
+
+export type TypeBadgeProps = {
+  type: TypeName;
+  onClick?: (type: TypeName) => void;
   size?: "sm" | "md" | "lg";
   className?: string;
-}
+};
 
 const SIZE_CLASSES = {
   sm: "px-2 py-0.5 text-xs",
@@ -14,18 +17,29 @@ const SIZE_CLASSES = {
   lg: "px-4 py-1.5 text-base",
 };
 
-export default function TypeBadge({ type, size = "md", className }: TypeBadgeProps) {
-  const color = TYPE_COLORS[type as TypeName] ?? "bg-gray-400";
-  return (
-    <span
-      className={cn(
-        "inline-block rounded-full font-semibold text-white capitalize tracking-wide",
-        color,
-        SIZE_CLASSES[size],
-        className
-      )}
-    >
-      {type}
-    </span>
-  );
+const BASE =
+  "inline-block rounded-full font-semibold text-white capitalize tracking-wide";
+
+export default function TypeBadge({
+  type,
+  onClick,
+  size = "md",
+  className,
+}: TypeBadgeProps) {
+  const color = TYPE_COLORS[type] ?? "bg-gray-400";
+  const classes = cn(BASE, color, SIZE_CLASSES[size], className);
+
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        onClick={() => onClick(type)}
+        className={cn(classes, "cursor-pointer hover:opacity-80 transition-opacity")}
+      >
+        {type}
+      </button>
+    );
+  }
+
+  return <span className={classes}>{type}</span>;
 }

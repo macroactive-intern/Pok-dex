@@ -75,7 +75,7 @@ export default async function PokemonPage({ params }: Props) {
           {genus && <p className="text-muted-foreground italic">{genus}</p>}
           <div className="flex gap-2">
             {pokemon.types.map(({ type }) => (
-              <TypeBadge key={type.name} type={type.name} size="lg" />
+              <TypeBadge key={type.name} type={type.name as TypeName} size="lg" />
             ))}
           </div>
           {flavorText && <p className="text-sm leading-relaxed max-w-prose">{flavorText}</p>}

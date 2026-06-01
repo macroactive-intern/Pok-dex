@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import type { Pokemon } from "@/lib/pokemon/types";
+import type { Pokemon, TypeName } from "@/lib/pokemon/types";
 import TypeBadge from "./TypeBadge";
 import { Progress } from "@/components/ui/progress";
 
@@ -41,7 +41,7 @@ export default function ComparePanel({ left, right }: ComparePanelProps) {
           )}
           <p className="capitalize font-semibold">{left.name}</p>
           <div className="flex gap-1 flex-wrap justify-center">
-            {left.types.map(({ type }) => <TypeBadge key={type.name} type={type.name} size="sm" />)}
+            {left.types.map(({ type }) => <TypeBadge key={type.name} type={type.name as TypeName} size="sm" />)}
           </div>
         </div>
         <span className="text-2xl font-bold text-muted-foreground">VS</span>
@@ -51,7 +51,7 @@ export default function ComparePanel({ left, right }: ComparePanelProps) {
           )}
           <p className="capitalize font-semibold">{right.name}</p>
           <div className="flex gap-1 flex-wrap justify-center">
-            {right.types.map(({ type }) => <TypeBadge key={type.name} type={type.name} size="sm" />)}
+            {right.types.map(({ type }) => <TypeBadge key={type.name} type={type.name as TypeName} size="sm" />)}
           </div>
         </div>
       </div>
