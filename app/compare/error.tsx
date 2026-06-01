@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -15,7 +15,7 @@ export default function Error({ error, reset }: ErrorProps) {
       <p className="text-muted-foreground">{error.message}</p>
       <div className="flex gap-2">
         <Button variant="outline" onClick={reset}>Try again</Button>
-        <Button asChild><Link href="/">Back to Pokédex</Link></Button>
+        <Link href="/" className={buttonVariants()}>Back to Pokédex</Link>
       </div>
     </main>
   );

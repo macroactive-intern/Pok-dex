@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ChainLink } from "@/lib/pokemon/types";
-import { getPokemon } from "@/lib/pokemon/api";
+import { getPokemonByName } from "@/lib/pokemon/api";
 
 async function EvolutionNode({ species }: { species: { name: string; url: string } }) {
   const id = species.url.split("/").at(-2);
   let sprite: string | null = null;
   try {
-    const pokemon = await getPokemon(species.name);
+    const pokemon = await getPokemonByName(species.name);
     sprite = pokemon.sprites.other["official-artwork"].front_default ?? pokemon.sprites.front_default;
   } catch {
     // sprite remains null

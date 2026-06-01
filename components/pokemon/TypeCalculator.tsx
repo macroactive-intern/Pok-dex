@@ -4,7 +4,6 @@ import { useState } from "react";
 import { getDefensiveMatchups } from "@/lib/pokemon/typeChart";
 import type { TypeName } from "@/lib/pokemon/types";
 import TypeBadge from "./TypeBadge";
-import { Label } from "@/components/ui/label";
 
 const ALL_TYPES: TypeName[] = [
   "normal","fire","water","electric","grass","ice","fighting","poison",
@@ -29,7 +28,7 @@ export default function TypeCalculator() {
   return (
     <div className="space-y-6">
       <div>
-        <Label className="mb-2 block">Select up to 2 types</Label>
+        <p className="mb-2 text-sm font-medium">Select up to 2 types</p>
         <div className="flex flex-wrap gap-2">
           {ALL_TYPES.map((type) => (
             <button

@@ -2,29 +2,36 @@
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
-import { getPokemon, getPokemonList } from "@/lib/pokemon/api";
+import { getPokemonByName, getPokemonList } from "@/lib/pokemon/api";
 import type { Pokemon } from "@/lib/pokemon/types";
 import PokemonGrid from "./PokemonGrid";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Button } from "@/components/ui/button";
 
-const PAGE_SIZE = 24;
+const PAGE_SIZE = 20;
 
-async function fetchPage({ pageParam = 0 }: { pageParam: number }) {
+async function fetchPage({ pageParam }: { pageParam: number }) {
   const list = await getPokemonList(PAGE_SIZE, pageParam);
   const pokemon = await Promise.all(
-    list.results.map((r) => getPokemon(r.name))
+    list.results.map((r) => getPokemonByName(r.name))
   );
   return { pokemon, next: list.next, offset: pageParam + PAGE_SIZE };
 }
 
-export default function InfiniteList() {
+interface InfiniteListProps {
+  initialPokemon: Pokemon[];
+}
+
+export default function InfiniteList({ initialPokemon }: InfiniteListProps) {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, status } =
     useInfiniteQuery({
       queryKey: ["pokemon-infinite"],
       queryFn: fetchPage,
-      initialPageParam: 0,
+      initialPageParam: PAGE_SIZE,
       getNextPageParam: (last) => (last.next ? last.offset : undefined),
+      initialData: {
+        pages: [{ pokemon: initialPokemon, next: "yes", offset: PAGE_SIZE }],
+        pageParams: [0],
+      },
     });
 
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -44,8 +51,9 @@ export default function InfiniteList() {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  if (status === "pending") return <GridSkeleton />;
-  if (status === "error") return <p className="text-destructive">Failed to load Pokémon.</p>;
+  if (status === "error") {
+    return <p className="text-destructive">Failed to load Pokémon.</p>;
+  }
 
   const allPokemon: Pokemon[] = data.pages.flatMap((p) => p.pokemon);
 
@@ -62,7 +70,7 @@ export default function InfiniteList() {
   );
 }
 
-function GridSkeleton({ count = 24 }: { count?: number }) {
+function GridSkeleton({ count = 20 }: { count?: number }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
       {Array.from({ length: count }).map((_, i) => (

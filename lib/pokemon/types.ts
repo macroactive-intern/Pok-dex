@@ -103,6 +103,12 @@ export interface EvolutionChain {
   chain: ChainLink;
 }
 
+// ─── Combined ─────────────────────────────────────────────────────────────────
+
+export interface PokemonWithSpecies extends Pokemon {
+  species_data: PokemonSpecies;
+}
+
 // ─── Type effectiveness ───────────────────────────────────────────────────────
 
 /** 0 = immune · 0.5 = not very effective · 1 = normal · 2 = super effective */

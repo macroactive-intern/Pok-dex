@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { getPokemon } from "@/lib/pokemon/api";
+import { getPokemonByName } from "@/lib/pokemon/api";
 import ComparePanel from "@/components/pokemon/ComparePanel";
 import PokemonSearch from "@/components/pokemon/PokemonSearch";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -14,8 +14,8 @@ export default async function ComparePage({ searchParams }: Props) {
   const { left, right } = await searchParams;
 
   const [leftPokemon, rightPokemon] = await Promise.all([
-    left ? getPokemon(left).catch(() => null) : null,
-    right ? getPokemon(right).catch(() => null) : null,
+    left ? getPokemonByName(left).catch(() => null) : null,
+    right ? getPokemonByName(right).catch(() => null) : null,
   ]);
 
   return (

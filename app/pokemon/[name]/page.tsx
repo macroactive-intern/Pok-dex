@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getPokemon, getPokemonSpecies, getEvolutionChain } from "@/lib/pokemon/api";
+import { getPokemonByName, getPokemonSpecies, getEvolutionChainByUrl } from "@/lib/pokemon/api";
 import { getDefensiveMatchups } from "@/lib/pokemon/typeChart";
 import type { TypeName } from "@/lib/pokemon/types";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -9,7 +9,7 @@ import PokemonStats from "@/components/pokemon/PokemonStats";
 import EvolutionChain from "@/components/pokemon/EvolutionChain";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 
 interface Props {
@@ -24,13 +24,13 @@ export async function generateMetadata({ params }: Props) {
 export default async function PokemonPage({ params }: Props) {
   const { name } = await params;
 
-  const pokemon = await getPokemon(name).catch(() => null);
+  const pokemon = await getPokemonByName(name).catch(() => null);
   if (!pokemon) notFound();
 
   const [species, evolutionChain] = await Promise.allSettled([
     getPokemonSpecies(pokemon.species.name),
     getPokemonSpecies(pokemon.species.name).then((s) =>
-      getEvolutionChain(s.evolution_chain.url)
+      getEvolutionChainByUrl(s.evolution_chain.url)
     ),
   ]);
 
@@ -53,9 +53,9 @@ export default async function PokemonPage({ params }: Props) {
   return (
     <main className="max-w-4xl mx-auto px-4 py-8 space-y-6">
       <div className="flex items-center gap-2">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/"><ChevronLeft className="h-4 w-4" />Back</Link>
-        </Button>
+        <Link href="/" className={buttonVariants({ variant: "ghost", size: "sm" })}>
+          <ChevronLeft className="h-4 w-4" />Back
+        </Link>
       </div>
 
       {/* Hero */}
